@@ -6,7 +6,10 @@ export const C = {
 };
 
 /* ---------------- Sova the owl ---------------- */
-export function owlSVG(accessory = 'scarf') {
+export function owlSVG(accessory = 'scarf', opts = {}) {
+  const { outfit = 'none', costume = null } = opts;
+  if (costume) accessory = 'none';
+  if (outfit !== 'none' && !costume && ['bandana', 'goggles', 'crown'].includes(accessory) && OUTFIT_HEAD.has(outfit)) accessory = 'scarf';
   const acc = {
     scarf: `<path d="M62 150 Q100 172 138 150 L136 164 Q100 184 64 164Z" fill="${C.teal}"/><path d="M124 160 l16 30 l-14 4 l-10 -28z" fill="${C.teal}"/>`,
     bandana: `<path d="M48 70 Q100 40 152 70 L150 84 Q100 60 50 84Z" fill="${C.leaf}"/><path d="M146 76 l22 -10 l-6 18z M146 80 l20 10 l-18 4z" fill="#5E9A2E"/><circle cx="80" cy="62" r="4" fill="#A8D672"/><circle cx="118" cy="60" r="4" fill="#A8D672"/>`,
@@ -18,6 +21,7 @@ export function owlSVG(accessory = 'scarf') {
   return `
 <svg class="owl" viewBox="0 0 200 210" role="img" aria-label="Sova the owl">
   <ellipse cx="100" cy="200" rx="58" ry="8" fill="rgba(27,58,75,.15)"/>
+  ${outfit === 'cape' && !costume ? OUTFITS_SVG.cape : ''}
   <g class="owl-body">
     <path d="M52 36 L66 66 L44 70Z" fill="${C.caramel}"/><path d="M148 36 L134 66 L156 70Z" fill="${C.caramel}"/>
     <g class="wing wing-l"><path d="M44 104 Q16 130 34 176 Q52 170 60 140Z" fill="${C.caramel}"/></g>
@@ -41,6 +45,7 @@ export function owlSVG(accessory = 'scarf') {
     ${front ? '' : acc}
   </g>
   ${front ? `<g class="owl-acc">${acc}</g>` : ''}
+  ${costume ? COSTUMES[costume] || '' : (outfit !== 'cape' ? OUTFITS_SVG[outfit] || '' : '')}
 </svg>`;
 }
 
@@ -130,3 +135,59 @@ export const bg = {
 // place a 100x100 icon in a scene
 export const put = (svgIcon, x, y, size, cls = '') => `<g class="${cls}" style="transform-origin:${x + size / 2}px ${y + size / 2}px">` + svgIcon.replace('<svg viewBox="0 0 100 100" aria-hidden="true">', `<svg x="${x}" y="${y}" width="${size}" height="${size}" viewBox="0 0 100 100">`) + '</g>';
 export { nest };
+
+/* ---------------- v2: outfits Sova can wear (bought with golden acorns) ---------------- */
+const OUTFIT_HEAD = new Set(['party', 'wizard', 'pirate', 'tophat', 'chef', 'goldcrown', 'flower']);
+export const OUTFITS_SVG = {
+  none: '',
+  bowtie: `<g><path d="M100 168 L76 156 L76 182Z M100 168 L124 156 L124 182Z" fill="#E04B3A"/><circle cx="100" cy="168" r="7" fill="#B23A2B"/></g>`,
+  sunglasses: `<g><rect x="50" y="70" width="46" height="30" rx="12" fill="#1F2937"/><rect x="104" y="70" width="46" height="30" rx="12" fill="#1F2937"/><path d="M96 82 h8" stroke="#1F2937" stroke-width="5"/><path d="M58 76 l12 0" stroke="#fff" stroke-width="4" stroke-linecap="round" opacity=".6"/></g>`,
+  party: `<g><path d="M100 -6 L126 52 Q100 60 74 52Z" fill="#4EB3A8"/><path d="M88 22 l8 10 M106 14 l6 12 M112 38 l-8 8" stroke="#F4C45A" stroke-width="5" stroke-linecap="round"/><circle cx="100" cy="-8" r="9" fill="#E07A5F"/></g>`,
+  flower: `<g transform="translate(140 46)"><circle r="16" fill="#E86AA6"/><circle cx="-12" cy="-10" r="10" fill="#F49AC4"/><circle cx="12" cy="-10" r="10" fill="#F49AC4"/><circle cx="-12" cy="10" r="10" fill="#F49AC4"/><circle cx="12" cy="10" r="10" fill="#F49AC4"/><circle r="8" fill="#FFE08A"/></g>`,
+  chef: `<g><rect x="66" y="34" width="68" height="22" rx="6" fill="#fff" stroke="#E5E5E5" stroke-width="3"/><circle cx="76" cy="20" r="18" fill="#fff"/><circle cx="100" cy="10" r="22" fill="#fff"/><circle cx="124" cy="20" r="18" fill="#fff"/></g>`,
+  pirate: `<g><path d="M36 52 Q100 -10 164 52 Q100 36 36 52Z" fill="#222"/><circle cx="100" cy="30" r="9" fill="#fff"/><path d="M94 26 l12 8 M106 26 l-12 8" stroke="#222" stroke-width="3"/><path d="M42 50 Q100 34 158 50" stroke="#F4C45A" stroke-width="4" fill="none"/></g>`,
+  tophat: `<g><rect x="56" y="44" width="88" height="12" rx="6" fill="#222"/><rect x="72" y="0" width="56" height="48" rx="6" fill="#222"/><rect x="72" y="32" width="56" height="9" fill="#E07A5F"/></g>`,
+  wizard: `<g><path d="M100 -24 L138 50 L62 50Z" fill="#3D3B8E"/><ellipse cx="100" cy="50" rx="52" ry="10" fill="#3D3B8E"/><path d="M96 10 l3 7 7 0 -6 4 2 7 -6 -4 -6 4 2 -7 -6 -4 7 0Z M112 32 l2 4 4 0 -3 3 1 4 -4 -2 -4 2 1 -4 -3 -3 4 0Z" fill="#F4C45A"/></g>`,
+  goldcrown: `<g><path d="M60 54 L60 24 L80 40 L100 14 L120 40 L140 24 L140 54Z" fill="#F4C45A" stroke="#C99A2E" stroke-width="3" stroke-linejoin="round"/><circle cx="100" cy="40" r="6" fill="#E04B3A"/><circle cx="76" cy="46" r="4" fill="#4EB3A8"/><circle cx="124" cy="46" r="4" fill="#4EB3A8"/></g>`,
+  cape: `<path d="M44 96 Q20 200 40 206 L160 206 Q180 200 156 96Z" fill="#8E3BB0"/>`,
+};
+
+/* ---------------- v2: boss costumes (Sova plays a storybook guest) ---------------- */
+export const COSTUMES = {
+  pythagoras: `<g><path d="M70 112 Q100 196 130 112 Q118 130 100 128 Q82 130 70 112Z" fill="#F5F5F5" stroke="#DDD" stroke-width="2"/>
+    <path d="M44 56 Q100 22 156 56" stroke="#5E9A2E" stroke-width="7" fill="none"/>${[52, 68, 84, 116, 132, 148].map((x, i) => `<ellipse cx="${x}" cy="${i < 3 ? 52 - i * 6 : 40 + (i - 3) * 6}" rx="9" ry="5" fill="#7CB342" transform="rotate(${i < 3 ? -30 : 30} ${x} 48)"/>`).join('')}
+    <path d="M40 150 Q100 210 160 150 L160 200 L40 200Z" fill="#fff" opacity=".9"/><path d="M60 150 L150 196" stroke="#4EB3A8" stroke-width="8"/>
+    <text x="100" y="186" font-size="20" text-anchor="middle" fill="#1B3A4B" font-weight="900">a²+b²</text></g>`,
+  tesla: `<g><path d="M52 50 Q100 10 150 50 Q130 36 100 38 Q72 36 52 50Z" fill="#2A1A0E"/><path d="M80 112 Q90 104 100 112 Q110 104 120 112 Q110 118 100 114 Q90 118 80 112Z" fill="#2A1A0E"/>
+    <path d="M100 160 L80 150 L80 172Z M100 160 L120 150 L120 172Z" fill="#1B3A4B"/>
+    <path d="M168 20 L152 54 L166 54 L150 92 L186 44 L170 44 L184 20Z" fill="#F4C45A" stroke="#C99A2E" stroke-width="2"/></g>`,
+  einstein: `<g>${Array.from({ length: 14 }, (_, i) => { const a = Math.PI + (i / 13) * Math.PI; return `<circle cx="${100 + 70 * Math.cos(a)}" cy="${70 + 46 * Math.sin(a)}" r="16" fill="#F2F2F2" stroke="#DADADA" stroke-width="2"/>`; }).join('')}
+    <circle cx="32" cy="84" r="16" fill="#F2F2F2"/><circle cx="168" cy="84" r="16" fill="#F2F2F2"/>
+    <path d="M78 112 Q100 100 122 112 Q100 122 78 112Z" fill="#EDEDED" stroke="#CCC" stroke-width="2"/>
+    <text x="100" y="186" font-size="22" text-anchor="middle" fill="#1B3A4B" font-weight="900">E=mc²</text></g>`,
+  darwin: `<g><path d="M62 110 Q100 210 138 110 Q120 132 100 128 Q80 132 62 110Z" fill="#F0F0F0" stroke="#D5D5D5" stroke-width="2"/>
+    <path d="M54 62 Q72 52 90 62 M110 62 Q128 52 146 62" stroke="#EEE" stroke-width="9" stroke-linecap="round" fill="none"/>
+    <ellipse cx="160" cy="150" rx="18" ry="12" fill="#6FA83E"/><path d="M146 146 Q160 130 174 146" fill="#8BC34A"/><circle cx="182" cy="150" r="6" fill="#9CCC65"/>
+    <rect x="22" y="120" width="26" height="34" rx="3" fill="#8A5A2B"/><path d="M26 128 h18 M26 136 h18 M26 144 h12" stroke="#F6E6C8" stroke-width="3"/></g>`,
+};
+
+/* ---------------- v2: extra icons ---------------- */
+export const icon2 = {
+  butterfly: (c = '#E86AA6') => `<svg viewBox="0 0 100 100" aria-hidden="true"><ellipse cx="30" cy="38" rx="22" ry="20" fill="${c}"/><ellipse cx="70" cy="38" rx="22" ry="20" fill="${c}"/><ellipse cx="34" cy="70" rx="16" ry="14" fill="${c}" opacity=".85"/><ellipse cx="66" cy="70" rx="16" ry="14" fill="${c}" opacity=".85"/><rect x="46" y="26" width="8" height="58" rx="4" fill="#3A2A1A"/><path d="M48 26 q-8 -14 -14 -14 M52 26 q8 -14 14 -14" stroke="#3A2A1A" stroke-width="3" fill="none"/></svg>`,
+  clock: (h, m) => { const ma = (m / 60) * 360, ha = ((h % 12) / 12) * 360 + (m / 60) * 30; return `<svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="44" fill="#fff" stroke="#1B3A4B" stroke-width="5"/>${Array.from({ length: 12 }, (_, i) => { const a = (i * 30 - 90) * Math.PI / 180; return `<text x="${50 + 34 * Math.cos(a)}" y="${54 + 34 * Math.sin(a)}" font-size="10" text-anchor="middle" font-weight="800" fill="#1B3A4B">${i || 12}</text>`; }).join('')}<line x1="50" y1="50" x2="50" y2="28" stroke="#E07A5F" stroke-width="6" stroke-linecap="round" transform="rotate(${ha} 50 50)"/><line x1="50" y1="50" x2="50" y2="14" stroke="#1B3A4B" stroke-width="4" stroke-linecap="round" transform="rotate(${ma} 50 50)"/><circle cx="50" cy="50" r="4" fill="#1B3A4B"/></svg>`; },
+  coin: (v) => v >= 5
+    ? `<svg viewBox="0 0 100 100" aria-hidden="true"><rect x="4" y="22" width="92" height="56" rx="8" fill="${v === 5 ? '#B8B8B8' : '#E8A0A0'}" stroke="#8A8A8A" stroke-width="3"/><circle cx="50" cy="50" r="16" fill="rgba(255,255,255,.5)"/><text x="50" y="58" font-size="24" text-anchor="middle" font-weight="900" fill="#333">${v}€</text></svg>`
+    : `<svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="40" fill="${v === 2 ? '#E9D9A6' : '#D9C27A'}" stroke="#B89A3E" stroke-width="5"/><circle cx="50" cy="50" r="26" fill="${v === 2 ? '#C9CED3' : '#E9D9A6'}"/><text x="50" y="60" font-size="26" text-anchor="middle" font-weight="900" fill="#5A4A1E">${v}€</text></svg>`,
+  pie: (n, k, c = '#E8A838') => { let s = ''; for (let i = 0; i < n; i++) { const a0 = (i / n) * 2 * Math.PI - Math.PI / 2, a1 = ((i + 1) / n) * 2 * Math.PI - Math.PI / 2; s += `<path d="M50 50 L${50 + 42 * Math.cos(a0)} ${50 + 42 * Math.sin(a0)} A42 42 0 ${n === 1 ? 1 : 0} 1 ${50 + 42 * Math.cos(a1)} ${50 + 42 * Math.sin(a1)}Z" fill="${i < k ? c : '#FFF8EC'}" stroke="#8A5A2B" stroke-width="2.5"/>`; } return `<svg viewBox="0 0 100 100" aria-hidden="true">${s}</svg>`; },
+  heart: (c = '#E86AA6') => `<svg viewBox="0 0 100 100" aria-hidden="true"><path d="M50 88 C10 60 6 32 26 20 C38 14 48 22 50 32 C52 22 62 14 74 20 C94 32 90 60 50 88Z" fill="${c}"/></svg>`,
+  light: (on) => `<svg viewBox="0 0 100 100" aria-hidden="true"><rect x="32" y="4" width="36" height="92" rx="14" fill="#333"/>${['#E04B3A', '#F4C45A', '#7CB342'].map((c, i) => `<circle cx="50" cy="${22 + i * 28}" r="11" fill="${c}" opacity="${i === on ? 1 : .2}"/>`).join('')}</svg>`,
+  sun: () => `<svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="22" fill="#F4C45A"/>${Array.from({ length: 8 }, (_, i) => `<line x1="50" y1="12" x2="50" y2="22" stroke="#F4C45A" stroke-width="6" stroke-linecap="round" transform="rotate(${i * 45} 50 50)"/>`).join('')}</svg>`,
+  plug: () => `<svg viewBox="0 0 100 100" aria-hidden="true"><rect x="30" y="34" width="40" height="40" rx="8" fill="#4EB3A8"/><rect x="38" y="16" width="6" height="20" fill="#888"/><rect x="56" y="16" width="6" height="20" fill="#888"/><path d="M50 74 v22" stroke="#333" stroke-width="6"/><path d="M52 42 L42 56 L50 56 L46 68 L58 52 L50 52Z" fill="#F4C45A"/></svg>`,
+  bone: () => `<svg viewBox="0 0 100 100" aria-hidden="true"><g transform="rotate(-30 50 50)"><rect x="22" y="42" width="56" height="16" rx="8" fill="#F4EEE2" stroke="#C9B79A" stroke-width="3"/><circle cx="22" cy="42" r="10" fill="#F4EEE2" stroke="#C9B79A" stroke-width="3"/><circle cx="22" cy="58" r="10" fill="#F4EEE2" stroke="#C9B79A" stroke-width="3"/><circle cx="78" cy="42" r="10" fill="#F4EEE2" stroke="#C9B79A" stroke-width="3"/><circle cx="78" cy="58" r="10" fill="#F4EEE2" stroke="#C9B79A" stroke-width="3"/></g></svg>`,
+  acorn: () => `<svg viewBox="0 0 60 70" aria-hidden="true"><path d="M10 30 Q10 64 30 66 Q50 64 50 30Z" fill="#F4C45A" stroke="#C99A2E" stroke-width="3"/><path d="M6 30 Q30 8 54 30Z" fill="#8A5A2B"/><path d="M30 14 q2 -10 10 -10" stroke="#8A5A2B" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M20 40 q-2 10 4 16" stroke="#fff" stroke-width="3" fill="none" opacity=".6" stroke-linecap="round"/></svg>`,
+  starSmall: (on) => `<svg viewBox="0 0 100 100" aria-hidden="true"><path d="M50 6 L62 38 L96 38 L68 58 L79 92 L50 72 L21 92 L32 58 L4 38 L38 38Z" fill="${on ? '#F4C45A' : '#E6DCCB'}" stroke="${on ? '#C99A2E' : '#CDBFA8'}" stroke-width="4" stroke-linejoin="round"/></svg>`,
+  trophy: () => `<svg viewBox="0 0 100 100" aria-hidden="true"><path d="M28 14 h44 v20 a22 22 0 0 1 -44 0Z" fill="#F4C45A" stroke="#C99A2E" stroke-width="3"/><path d="M28 20 h-12 q0 18 14 20 M72 20 h12 q0 18 -14 20" stroke="#C99A2E" stroke-width="5" fill="none"/><rect x="44" y="56" width="12" height="16" fill="#C99A2E"/><rect x="30" y="72" width="40" height="12" rx="4" fill="#8A5A2B"/></svg>`,
+  book: () => `<svg viewBox="0 0 100 100" aria-hidden="true"><path d="M10 22 Q30 14 50 24 Q70 14 90 22 V80 Q70 72 50 82 Q30 72 10 80Z" fill="#fff" stroke="#8A5A2B" stroke-width="4"/><path d="M50 24 V82" stroke="#8A5A2B" stroke-width="4"/><path d="M20 36 h20 M20 48 h20 M60 36 h20 M60 48 h20" stroke="#E07A5F" stroke-width="4" stroke-linecap="round"/></svg>`,
+  lockSmall: () => `<svg viewBox="0 0 100 100" aria-hidden="true"><rect x="24" y="44" width="52" height="40" rx="10" fill="#B9A58C"/><path d="M36 44 V34 a14 14 0 0 1 28 0 V44" stroke="#B9A58C" stroke-width="8" fill="none"/></svg>`,
+  map: () => `<svg viewBox="0 0 100 100" aria-hidden="true"><path d="M12 22 L36 12 L64 22 L88 12 V78 L64 88 L36 78 L12 88Z" fill="#fff"/><path d="M36 12 V78 M64 22 V88" stroke="#4EB3A8" stroke-width="4"/><path d="M22 60 q14 -20 28 -6 t26 -14" stroke="#E07A5F" stroke-width="4" fill="none" stroke-dasharray="6 5"/></svg>`,
+};

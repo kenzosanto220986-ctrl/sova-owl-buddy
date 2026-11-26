@@ -1,10 +1,21 @@
-# Sova · Сова · Σόβα — v1
+# Sova · Сова · Σόβα — v2
 
 A playful AI owl learning web app for David (age 5). Russian first, with Greek and English words sprinkled in.
 Product bible: `/workspace/owl-buddy/owl-buddy-concept.md`.
 
 **This is a completely separate app** — its own folder (`/workspace/sova-app`), its own git repo (`sova-owl-buddy`)
 and its own hosting service (`sova-owl-buddy` on Render). It shares nothing with any other app.
+
+## What's new in v2 — level progression
+- **World maps:** each world is a board-game path of **5 stages × (10 levels + 1 boss) = 55 levels**, 220 in total. Levels unlock one by one; a level passes with **2 of 3 stars** (stars = share of first-try answers: ≥90% → 3, ≥60% → 2).
+- **Stages by age:** 1 (5): counting to 10, shapes, colors, first words, more/less · 2 (6): counting to 20, ± within 10, first letters in Cyrillic/Greek/Latin, first syllables, number order · 3 (7): ± to 100, reading words, telling time, comparing · 4 (8): times tables, money (€), simple sentences (ru/el/en) · 5 (9–10): fractions, measurement & units, science reasoning, story sequencing.
+- **Procedural:** `js/questions.js` holds ~20 themed templates (dinos/space/cars/animals SVG art) seeded per world+level+attempt, so every level is stable but retries vary. Stage 1 levels 3 and 7 are the v1 scripted story adventures. Reading/letter/sentence tasks only use alphabets the parent has enabled (Russian always).
+- **Adaptive:** two perfect, fast levels in a row skip the next level (stays playable for stars); two struggles on the same skill insert a 2-question practice round with hints; a 1-star result offers "practice together" (+2 acorns) and a retry. Nothing is ever taken away.
+- **Rewards:** stars, golden acorns (5 per new star, +25 first boss win, +10 per badge), 15 badges (Dino Expert, Space Captain, Race Champion, Jungle Ranger with stage tiers, Word Wizard, Math Star, Story Teller, Explorer, Acorn Collector, Stage Master, guest helpers), 10 outfits for Sova (15–160 acorns), stage-complete celebration.
+- **Boss levels:** Professor Pythagoras (Dino Valley/math), Albert Einstein (Space), Captain Tesla (Cars/electricity), Professor Darwin (Jungle) — always introduced as Sova *pretending* ("понарошку, как в театре") with a parent note.
+- **Parent corner:** per-world/stage progress bars, stars, badges, skills mastered / needing practice, starting stage (1–5), unlock-all for testing, reset progress; export now includes progress + the v1 backup.
+- **Migration:** on first v2 load the original v1 data is copied to `sova.v1backup`; v1 sessions stay intact, played v1 adventures become passed story levels, v1 words carry over, plus a welcome gift of acorns (10 per v1 session, max 50).
+- New files: `js/questions.js`, `js/levels.js`, `js/progress.js`; storage key `sova.progress.v2`.
 
 ## What's in v1
 - Home map with Sova (animated SVG owl: blinks, breathes, talking beak, world accessories), 4 world cards, big mic, acorn session timer, hidden parent lock.
@@ -23,7 +34,10 @@ and its own hosting service (`sova-owl-buddy` on Render). It shares nothing with
 public/            the deployed static site (no build step)
   index.html, styles.css, manifest.webmanifest, icons
   js/app.js        screens + session engine
-  js/adventures.js all worlds/adventures/words (edit here to add episodes)
+  js/adventures.js scripted story adventures (v1)
+  js/questions.js  v2 procedural question templates + stages
+  js/levels.js     v2 level maps, bosses, level plans
+  js/progress.js   v2 stars/acorns/badges/outfits + v1 migration
   js/art.js        owl, icons, scenes (pure SVG)
   js/voice.js      speech output (browser now, ElevenLabs later)
   js/listen.js     speech recognition
